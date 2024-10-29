@@ -1,0 +1,8 @@
+COMANDOS
+
+git config --global user.name "Ludmila Brizuela"
+git config --global user.email "brizuelal127@gmail.com"
+git init (inicializar en la carpeta)
+git status (ver estado)
+git add <nombre archivo>, git add . (sube todo lo nuevo)
+git commit -m "mensaje"
