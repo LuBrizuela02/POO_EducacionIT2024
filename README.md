@@ -1,4 +1,4 @@
-# Pong Game
+# Pong Game 🏓
 
 Un juego clásico de Pong implementado en HTML, CSS y JavaScript. Este juego permite que dos jugadores compitan entre sí, controlando palas para devolver una pelota y marcar puntos.
 
