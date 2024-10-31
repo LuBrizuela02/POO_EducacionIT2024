@@ -1,11 +1,160 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Juego Pong</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #333;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+        canvas {
+            background-color: #000;
+            border: 1px solid white;
+        }
+        #scoreboard {
+            margin: 20px;
+            font-size: 24px;
+        }
+        #instructions {
+            margin-top: 20px;
+            font-size: 16px;
+        }
+    </style>
 </head>
 <body>
-    
+    <div id="scoreboard">Jugador 1: 0 | Jugador 2: 0</div>
+    <canvas id="gameCanvas" width="800" height="400"></canvas>
+    <div id="instructions">
+        <p>Controles:</p>
+        <p>Jugador 1: 'A' (arriba), 'Z' (abajo)</p>
+        <p>Jugador 2: Flechas arriba/abajo</p>
+        <p>Presiona 'R' para reiniciar el juego.</p>
+    </div>
+
+    <script>
+        // Obtener el contexto del canvas
+        const canvas = document.getElementById("gameCanvas");
+        const ctx = canvas.getContext("2d");
+
+        // Variables del juego
+        const paddleWidth = 10, paddleHeight = 100, ballSize = 10;
+        let player1Y = (canvas.height - paddleHeight) / 2;
+        let player2Y = (canvas.height - paddleHeight) / 2;
+        let ballX = canvas.width / 2, ballY = canvas.height / 2;
+        let ballSpeedX = 4, ballSpeedY = 4;
+        let player1Score = 0, player2Score = 0;
+        let gameActive = true;
+
+        // Función para dibujar rectángulos (palas)
+        function drawRect(x, y, width, height) {
+            ctx.fillStyle = "white";
+            ctx.fillRect(x, y, width, height);
+        }
+
+        // Función para dibujar la pelota
+        function drawBall(x, y) {
+            ctx.fillStyle = "white";
+            ctx.beginPath();
+            ctx.arc(x, y, ballSize, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        // Función para dibujar el puntaje
+        function drawScore() {
+            ctx.fillStyle = "white";
+            ctx.font = "24px Arial";
+            ctx.clearRect(0, 0, canvas.width, 50); // Limpiar la parte superior donde se muestra el puntaje
+            ctx.fillText(`Jugador 1: ${player1Score} | Jugador 2: ${player2Score}`, 20, 30);
+        }
+
+        // Función principal del juego
+        function gameLoop() {
+            if (!gameActive) return;
+
+            // Limpiar el canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Actualizar la posición de la pelota
+            ballX += ballSpeedX;
+            ballY += ballSpeedY;
+
+            // Colisión con las paredes superior e inferior
+            if (ballY <= 0 || ballY >= canvas.height) {
+                ballSpeedY = -ballSpeedY;
+            }
+
+            // Colisión con la pala del jugador 1
+            if (ballX <= paddleWidth && ballY >= player1Y && ballY <= player1Y + paddleHeight) {
+                ballSpeedX = -ballSpeedX;
+            }
+
+            // Colisión con la pala del jugador 2
+            if (ballX >= canvas.width - paddleWidth && ballY >= player2Y && ballY <= player2Y + paddleHeight) {
+                ballSpeedX = -ballSpeedX;
+            }
+
+            // Comprobar si un jugador anota
+            if (ballX < 0) {
+                player2Score++;
+                resetBall();
+            } else if (ballX > canvas.width) {
+                player1Score++;
+                resetBall();
+            }
+
+            // Dibujar palas y pelota
+            drawRect(0, player1Y, paddleWidth, paddleHeight); // Pala del jugador 1
+            drawRect(canvas.width - paddleWidth, player2Y, paddleWidth, paddleHeight); // Pala del jugador 2
+            drawBall(ballX, ballY); // Dibujar pelota
+            drawScore(); // Dibujar puntaje
+
+            // Solicitar el siguiente frame
+            requestAnimationFrame(gameLoop);
+        }
+
+        // Reiniciar la pelota después de un gol
+        function resetBall() {
+            ballX = canvas.width / 2;
+            ballY = canvas.height / 2;
+            ballSpeedX = -ballSpeedX; // Cambiar la dirección de la pelota
+            drawScore();
+        }
+
+        // Control del jugador 1 (A y Z)
+        window.addEventListener("keydown", (e) => {
+            if (e.key === "a" && player1Y > 0) player1Y -= 20; // Mover hacia arriba
+            if (e.key === "z" && player1Y < canvas.height - paddleHeight) player1Y += 20; // Mover hacia abajo
+            if (e.key === "ArrowUp" && player2Y > 0) player2Y -= 20; // Mover hacia arriba (Jugador 2)
+            if (e.key === "ArrowDown" && player2Y < canvas.height - paddleHeight) player2Y += 20; // Mover hacia abajo (Jugador 2)
+            if (e.key === "r") resetGame(); // Reiniciar el juego
+        });
+
+        // Reiniciar el juego
+        function resetGame() {
+            player1Score = 0;
+            player2Score = 0;
+            player1Y = (canvas.height - paddleHeight) / 2;
+            player2Y = (canvas.height - paddleHeight) / 2;
+            resetBall();
+            gameActive = true;
+            gameLoop();
+        }
+
+        // Iniciar el bucle del juego
+        gameLoop();
+    </script>
 </body>
 </html>
