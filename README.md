@@ -1,6 +1,6 @@
 # Repositorio de Prácticos: Programación Orientada a Objetos con IA - Educación IT
 
-Bienvenido a mi repositorio de ejercicios prácticos para el curso de **Programación Orientada a Objetos con Inteligencia Artificial**. 
+Repositorio de ejercicios prácticos para el curso de **Programación Orientada a Objetos con Inteligencia Artificial**. 
 
 ## Autor
 
